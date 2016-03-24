@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_1" targetNamespace="http://bpmn.io/schema/bpmn">
+    <bpmn:collaboration id="Collaboration_1df5bw8">
+        <bpmn:participant id="zundokokiyoshi" name="zundokokiyoshi" processRef="kiyoshi_workflow" />
+    </bpmn:collaboration>
+    <bpmn:process id="kiyoshi_workflow" isExecutable="true">
+        <bpmn:laneSet>
+            <bpmn:lane id="kiyoshi_hikawa">
+                <bpmn:flowNodeRef>start</bpmn:flowNodeRef>
+                <bpmn:flowNodeRef>random_zundoko_gateway</bpmn:flowNodeRef>
+                <bpmn:flowNodeRef>say_doko</bpmn:flowNodeRef>
+                <bpmn:flowNodeRef>say_zun</bpmn:flowNodeRef>
+                <bpmn:flowNodeRef>kiyoshi_gateway</bpmn:flowNodeRef>
+            </bpmn:lane>
+            <bpmn:lane id="fun">
+                <bpmn:flowNodeRef>say_kiyoshi</bpmn:flowNodeRef>
+                <bpmn:flowNodeRef>end</bpmn:flowNodeRef>
+            </bpmn:lane>
+        </bpmn:laneSet>
+        <bpmn:startEvent id="start">
+            <bpmn:outgoing>flow_start</bpmn:outgoing>
+        </bpmn:startEvent>
+        <bpmn:exclusiveGateway id="random_zundoko_gateway">
+            <bpmn:incoming>flow_start</bpmn:incoming>
+            <bpmn:incoming>flow_after_kiyoshi_gateway</bpmn:incoming>
+            <bpmn:incoming>flow_after_zun</bpmn:incoming>
+            <bpmn:outgoing>flow_before_doko</bpmn:outgoing>
+            <bpmn:outgoing>flow_before_zun</bpmn:outgoing>
+        </bpmn:exclusiveGateway>
+        <bpmn:task id="say_doko" name="doko" default="flow_after_doko">
+            <bpmn:incoming>flow_before_doko</bpmn:incoming>
+            <bpmn:outgoing>flow_after_doko</bpmn:outgoing>
+        </bpmn:task>
+        <bpmn:task id="say_zun" name="zun" default="flow_after_zun">
+            <bpmn:incoming>flow_before_zun</bpmn:incoming>
+            <bpmn:outgoing>flow_after_zun</bpmn:outgoing>
+        </bpmn:task>
+        <bpmn:exclusiveGateway id="kiyoshi_gateway" default="flow_after_kiyoshi_gateway">
+            <bpmn:incoming>flow_after_doko</bpmn:incoming>
+            <bpmn:outgoing>flow_after_kiyoshi_gateway</bpmn:outgoing>
+            <bpmn:outgoing>flow_before_kiyoshi</bpmn:outgoing>
+        </bpmn:exclusiveGateway>
+        <bpmn:sequenceFlow id="flow_start" sourceRef="start" targetRef="random_zundoko_gateway" />
+        <bpmn:sequenceFlow id="flow_after_kiyoshi_gateway" sourceRef="kiyoshi_gateway" targetRef="random_zundoko_gateway" />
+        <bpmn:sequenceFlow id="flow_before_doko" sourceRef="random_zundoko_gateway" targetRef="say_doko">
+            <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">random % 2 == 1</bpmn:conditionExpression>
+        </bpmn:sequenceFlow>
+        <bpmn:sequenceFlow id="flow_before_zun" sourceRef="random_zundoko_gateway" targetRef="say_zun">
+            <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">random % 2 == 0</bpmn:conditionExpression>
+        </bpmn:sequenceFlow>
+        <bpmn:sequenceFlow id="flow_after_doko" sourceRef="say_doko" targetRef="kiyoshi_gateway" />
+        <bpmn:sequenceFlow id="flow_before_kiyoshi" sourceRef="kiyoshi_gateway" targetRef="say_kiyoshi">
+            <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression"><![CDATA[record matches "/zun\,zun\,zun\,zun\,doko$/"]]></bpmn:conditionExpression>
+        </bpmn:sequenceFlow>
+        <bpmn:task id="say_kiyoshi" name="kiyoshi">
+            <bpmn:incoming>flow_before_kiyoshi</bpmn:incoming>
+            <bpmn:outgoing>flow_end</bpmn:outgoing>
+        </bpmn:task>
+        <bpmn:endEvent id="end" name="end">
+            <bpmn:incoming>flow_end</bpmn:incoming>
+        </bpmn:endEvent>
+        <bpmn:sequenceFlow id="flow_end" sourceRef="say_kiyoshi" targetRef="end" />
+        <bpmn:sequenceFlow id="flow_after_zun" sourceRef="say_zun" targetRef="random_zundoko_gateway" />
+        <bpmn:textAnnotation id="TextAnnotation_1nilazr">    <bpmn:text>at random</bpmn:text>
+        </bpmn:textAnnotation>
+        <bpmn:association id="Association_1ubgsyl" sourceRef="random_zundoko_gateway" targetRef="TextAnnotation_1nilazr" />
+        <bpmn:association id="Association_0p41i5j" sourceRef="kiyoshi_gateway" targetRef="TextAnnotation_010447v" />
+        <bpmn:textAnnotation id="TextAnnotation_010447v">    <bpmn:text><![CDATA["zun zun zun zun doko" has appeared?]]></bpmn:text>
+        </bpmn:textAnnotation>
+    </bpmn:process>
+    <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+        <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Collaboration_1df5bw8">
+            <bpmndi:BPMNShape id="Participant_1m9n9py_di" bpmnElement="zundokokiyoshi">
+                <dc:Bounds x="241" y="-43" width="771" height="470" />
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="start">
+                <dc:Bounds x="291" y="102" width="36" height="36" />
+                <bpmndi:BPMNLabel>
+                    <dc:Bounds x="264" y="138" width="90" height="20" />
+                </bpmndi:BPMNLabel>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape id="ExclusiveGateway_0m50g2c_di" bpmnElement="random_zundoko_gateway" isMarkerVisible="true">
+                <dc:Bounds x="400" y="95" width="50" height="50" />
+                <bpmndi:BPMNLabel>
+                    <dc:Bounds x="380" y="145" width="90" height="20" />
+                </bpmndi:BPMNLabel>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape id="Task_0zdhu2g_di" bpmnElement="say_doko">
+                <dc:Bounds x="465" y="191" width="100" height="80" />
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape id="Task_0hg37dn_di" bpmnElement="say_zun">
+                <dc:Bounds x="465" y="-23" width="100" height="80" />
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape id="ExclusiveGateway_0nnwmn4_di" bpmnElement="kiyoshi_gateway" isMarkerVisible="true">
+                <dc:Bounds x="582" y="95" width="50" height="50" />
+                <bpmndi:BPMNLabel>
+                    <dc:Bounds x="562" y="145" width="90" height="20" />
+                </bpmndi:BPMNLabel>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape id="TextAnnotation_1nilazr_di" bpmnElement="TextAnnotation_1nilazr">
+                <dc:Bounds x="315" y="11" width="100" height="80" />
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape id="TextAnnotation_010447v_di" bpmnElement="TextAnnotation_010447v">
+                <dc:Bounds x="664" y="-10" width="100" height="80" />
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNEdge id="SequenceFlow_1ekygm8_di" bpmnElement="flow_start">
+                <di:waypoint xsi:type="dc:Point" x="327" y="120" />
+                <di:waypoint xsi:type="dc:Point" x="400" y="120" />
+                <bpmndi:BPMNLabel>
+                    <dc:Bounds x="289" y="110" width="90" height="20" />
+                </bpmndi:BPMNLabel>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge id="SequenceFlow_03nh3je_di" bpmnElement="flow_before_doko">
+                <di:waypoint xsi:type="dc:Point" x="425" y="145" />
+                <di:waypoint xsi:type="dc:Point" x="425" y="231" />
+                <di:waypoint xsi:type="dc:Point" x="465" y="231" />
+                <bpmndi:BPMNLabel>
+                    <dc:Bounds x="342" y="214" width="90" height="20" />
+                </bpmndi:BPMNLabel>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge id="SequenceFlow_0loiwzr_di" bpmnElement="flow_before_zun">
+                <di:waypoint xsi:type="dc:Point" x="425" y="95" />
+                <di:waypoint xsi:type="dc:Point" x="425" y="17" />
+                <di:waypoint xsi:type="dc:Point" x="465" y="17" />
+                <bpmndi:BPMNLabel>
+                    <dc:Bounds x="435" y="110" width="90" height="20" />
+                </bpmndi:BPMNLabel>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge id="Association_1ubgsyl_di" bpmnElement="Association_1ubgsyl">
+                <di:waypoint xsi:type="dc:Point" x="413" y="107" />
+                <di:waypoint xsi:type="dc:Point" x="400" y="91" />
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge id="Association_0p41i5j_di" bpmnElement="Association_0p41i5j">
+                <di:waypoint xsi:type="dc:Point" x="627" y="115" />
+                <di:waypoint xsi:type="dc:Point" x="664" y="26" />
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge id="SequenceFlow_13myp8n_di" bpmnElement="flow_after_kiyoshi_gateway">
+                <di:waypoint xsi:type="dc:Point" x="582" y="120" />
+                <di:waypoint xsi:type="dc:Point" x="450" y="120" />
+                <bpmndi:BPMNLabel>
+                    <dc:Bounds x="471" y="110" width="90" height="20" />
+                </bpmndi:BPMNLabel>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge id="SequenceFlow_1llq96k_di" bpmnElement="flow_after_doko">
+                <di:waypoint xsi:type="dc:Point" x="565" y="231" />
+                <di:waypoint xsi:type="dc:Point" x="607" y="231" />
+                <di:waypoint xsi:type="dc:Point" x="607" y="145" />
+                <bpmndi:BPMNLabel>
+                    <dc:Bounds x="627" y="220" width="90" height="20" />
+                </bpmndi:BPMNLabel>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNShape id="Lane_0r4eugb_di" bpmnElement="kiyoshi_hikawa">
+                <dc:Bounds x="271" y="-43" width="741" height="350" />
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape id="Lane_1e1xx1p_di" bpmnElement="fun">
+                <dc:Bounds x="271" y="307" width="741" height="120" />
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape id="Task_0t2n0i4_di" bpmnElement="say_kiyoshi">
+                <dc:Bounds x="631.6355498721227" y="331.6777493606138" width="100" height="80" />
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNEdge id="SequenceFlow_034dr8g_di" bpmnElement="flow_before_kiyoshi">
+                <di:waypoint xsi:type="dc:Point" x="632" y="120" />
+                <di:waypoint xsi:type="dc:Point" x="682" y="120" />
+                <di:waypoint xsi:type="dc:Point" x="682" y="332" />
+                <bpmndi:BPMNLabel>
+                    <dc:Bounds x="562" y="249" width="90" height="20" />
+                </bpmndi:BPMNLabel>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNShape id="EndEvent_0hi7xed_di" bpmnElement="end">
+                <dc:Bounds x="878.6355498721227" y="354" width="36" height="36" />
+                <bpmndi:BPMNLabel>
+                    <dc:Bounds x="851.6355498721227" y="390" width="90" height="20" />
+                </bpmndi:BPMNLabel>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNEdge id="SequenceFlow_1io5dw0_di" bpmnElement="flow_end">
+                <di:waypoint xsi:type="dc:Point" x="732" y="372" />
+                <di:waypoint xsi:type="dc:Point" x="879" y="372" />
+                <bpmndi:BPMNLabel>
+                    <dc:Bounds x="760.5" y="362" width="90" height="20" />
+                </bpmndi:BPMNLabel>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge id="SequenceFlow_1ek13y7_di" bpmnElement="flow_after_zun">
+                <di:waypoint xsi:type="dc:Point" x="483" y="57" />
+                <di:waypoint xsi:type="dc:Point" x="437" y="107" />
+                <bpmndi:BPMNLabel>
+                    <dc:Bounds x="400" y="7" width="90" height="20" />
+                </bpmndi:BPMNLabel>
+            </bpmndi:BPMNEdge>
+        </bpmndi:BPMNPlane>
+    </bpmndi:BPMNDiagram>
+</bpmn:definitions>
