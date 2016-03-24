@@ -10,7 +10,8 @@
         }
     ],
     "require": {
-        "php": ">=5.5.0"
+        "php": ">=5.5.0",
+        "phpmentors/workflower": "~1.1@dev"
     },
     "require-dev": {
         "phpunit/phpunit": "~4.8 || ~5.0",
